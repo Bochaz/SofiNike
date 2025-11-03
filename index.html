@@ -15,33 +15,46 @@
   }
 
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--white); }
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+}
 
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
+/* 🔧 FIX: permitimos que el contenido se desplace verticalmente */
+body {
+  display: block;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 20px 0;
+}
 
-  .app {
-    width: 100%;
-    max-width: 900px;
-    border-radius: 16px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
-    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-    overflow: hidden;
-  }
+/* El contenedor principal ya no se centra todo, pero mantiene ancho máximo */
+.app {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  overflow: hidden;
+}
 
-  /* Start screen */
-  .start {
-    padding: 60px 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    min-height: 420px;
-  }
+/* 🔧 Ajustamos un poco la separación del inicio */
+.start {
+  padding: 80px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  min-height: auto;
+}
+
+/* 🔧 Aseguramos scroll interno en el quiz si el contenido es largo */
+
+
 
   .logo-swoosh {
     width: 160px;
@@ -91,7 +104,11 @@
   }
 
   /* Quiz */
-  .quiz-wrap { display: none; padding: 28px; min-height: 520px; }
+.quiz-wrap {
+  display: none;
+  padding: 28px;
+  min-height: auto;
+}
   .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
   .mini-swoosh { width: 36px; filter: invert(1) brightness(1.4); }
   .title h3 { margin: 0; font-size: 18px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
@@ -161,6 +178,8 @@
 
   .final-screen { display: none; padding: 40px; text-align: center; }
   .final-screen h2 { color: var(--accent); letter-spacing: 2px; }
+
+  
 </style>
 </head>
 <body>
@@ -363,3 +382,4 @@ show(start);
 </script>
 </body>
 </html>
+
