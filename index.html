@@ -1,278 +1,210 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>¿Qué tipo de entrevistador Nike sos?</title>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background: radial-gradient(circle at top right, #111 0%, #000 70%);
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Nike</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-  h1, h2 {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
+    .container {
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      background-color: #111;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+      animation: fadeIn 0.6s ease;
+    }
 
-  .logo {
-    width: 120px;
-    margin: 30px 0;
-  }
+    h1, h2 {
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
 
-  #start, #quiz, #result, #final {
-    display: none;
-    padding: 30px 20px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
+    h2 {
+      color: #e50914; /* Rojo para los títulos de las preguntas */
+    }
 
-  button {
-    background-color: #e01e37;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    margin: 25px 10px;
-    cursor: pointer;
-    border-radius: 30px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
+    .question-container {
+      margin-bottom: 30px;
+      text-align: left;
+    }
 
-  button:hover {
-    background-color: #c1121f;
-    transform: scale(1.05);
-  }
+    .option {
+      display: block;
+      background-color: #222;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-  .question-block {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 15px;
-    margin: 25px 0;
-    padding: 20px;
-    text-align: left;
-    transition: background 0.3s;
-  }
+    .option:hover {
+      background-color: #e50914;
+      border-color: #e50914;
+      color: #fff;
+      transform: translateX(4px);
+    }
 
-  .question-block:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
+    .option.selected {
+      background-color: #e50914;
+      color: #fff;
+      border-color: #e50914;
+    }
 
-  .question {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 12px;
-    color: #fff;
-  }
+    button {
+      background-color: #fff;
+      color: #000;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 30px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.3s;
+      text-transform: uppercase;
+    }
 
-  label {
-    display: block;
-    margin: 10px 0;
-    background-color: rgba(255,255,255,0.07);
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+    button:hover {
+      background-color: #e50914;
+      color: #fff;
+    }
 
-  label:hover {
-    background-color: rgba(255,255,255,0.15);
-  }
+    .hidden {
+      display: none;
+    }
 
-  input[type="radio"] {
-    margin-right: 10px;
-  }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-  #result img {
-    width: 220px;
-    border-radius: 12px;
-    margin-top: 20px;
-  }
-
-  #final h2 {
-    color: #e01e37;
-    font-size: 2em;
-    margin-top: 20px;
-  }
-
-  .alert {
-    color: #e01e37;
-    font-weight: bold;
-    margin-top: 10px;
-  }
-</style>
+    .warning {
+      color: #e50914;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
+  <div class="container" id="start-screen">
+    <h1>Quiz Nike</h1>
+    <p>Completá todas las preguntas antes de ver tu resultado.</p>
+    <button onclick="startQuiz()">Comenzar</button>
+  </div>
 
-<div id="start">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" class="logo" alt="Nike logo">
-  <h1>Descubrí qué tipo de entrevistador Nike sos</h1>
-  <button onclick="startQuiz()">Empezar</button>
-</div>
+  <div class="container hidden" id="quiz-screen">
+    <div id="quiz"></div>
+    <p id="warning" class="warning hidden">⚠️ Respondé todas las preguntas antes de continuar.</p>
+    <button onclick="showResult()">Ver resultado</button>
+  </div>
 
-<div id="quiz"></div>
-<div id="result"></div>
-<div id="final">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" class="logo" alt="Nike logo">
-  <h2>JUST DO IT.</h2>
-  <button onclick="restartQuiz()">Volver a empezar</button>
-</div>
+  <div class="container hidden" id="result-screen">
+    <h1>Tu resultado</h1>
+    <p id="result-text"></p>
+    <button onclick="restartQuiz()">Reiniciar</button>
+    <button onclick="showFinal()">Finalizar</button>
+  </div>
 
-<script>
-const questions = [
-  { q: "1. ¿Qué observás primero en un candidato?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["Su experiencia y datos concretos", "Cómo se siente en la entrevista", "Su energía y espontaneidad"]
-  },
-  { q: "2. ¿Cómo preparás una entrevista?",
-    a: { analitico: 2, empatico: 0, intuitivo: 0 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Con una guía estructurada", "Pensando en generar confianza", "Dejo que fluya según la charla"]
-  },
-  { q: "3. Si un candidato se bloquea en una respuesta...",
-    a: { analitico: 1, empatico: 2, intuitivo: 1 },
-    b: { analitico: 2, empatico: 0, intuitivo: 0 },
-    c: { analitico: 0, empatico: 1, intuitivo: 2 },
-    options: ["Le doy espacio y apoyo", "Paso a la siguiente pregunta sin insistir", "Improviso algo para relajar el ambiente"]
-  },
-  { q: "4. ¿Qué valorás más en un candidato?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["La coherencia entre lo que dice y lo que hace", "La actitud y la empatía", "La visión y originalidad"]
-  },
-  { q: "5. ¿Cómo tomás tus decisiones finales?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Analizando datos y resultados", "Pensando en el equipo y el clima laboral", "Siguiendo mi corazonada"]
-  },
-  { q: "6. En una entrevista, te interesa más...",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["La precisión de sus respuestas", "Su nivel de conexión", "Su energía y lenguaje corporal"]
-  },
-  { q: "7. Tu herramienta preferida sería...",
-    a: { analitico: 2, empatico: 0, intuitivo: 0 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Tests psicotécnicos o entrevistas por competencias", "Conversaciones abiertas", "Dinámicas creativas y role plays"]
-  },
-  { q: "8. Si Nike te pidiera elegir un talento para una campaña global...",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["Al que tenga mejores resultados comprobables", "Al que inspire con su historia", "Al que rompa los esquemas y genere impacto"]
-  }
-];
-
-function startQuiz() {
-  document.getElementById("start").style.display = "none";
-  renderQuiz();
-  document.getElementById("quiz").style.display = "block";
-}
-
-function renderQuiz() {
-  const quizContainer = document.getElementById("quiz");
-  quizContainer.innerHTML = "<h1>Responde las preguntas</h1>";
-  questions.forEach((q, i) => {
-    quizContainer.innerHTML += `
-      <div class="question-block">
-        <div class="question">${q.q}</div>
-        <label><input type="radio" name="q${i}" value="a"> ${q.options[0]}</label>
-        <label><input type="radio" name="q${i}" value="b"> ${q.options[1]}</label>
-        <label><input type="radio" name="q${i}" value="c"> ${q.options[2]}</label>
-      </div>
-    `;
-  });
-  quizContainer.innerHTML += `<button onclick="calculateResult()">Ver resultado</button>
-  <div id="alert" class="alert"></div>`;
-}
-
-function calculateResult() {
-  let scores = { analitico: 0, empatico: 0, intuitivo: 0 };
-  let answeredAll = true;
-
-  questions.forEach((q, i) => {
-    const answer = document.querySelector(`input[name="q${i}"]:checked`);
-    if (answer) {
-      const value = q[answer.value];
-      scores.analitico += value.analitico;
-      scores.empatico += value.empatico;
-      scores.intuitivo += value.intuitivo;
-    } else {
-      answeredAll = false;
-    }
-  });
-
-  if (!answeredAll) {
-    document.getElementById("alert").textContent = "⚠️ Tenés que responder todas las preguntas antes de ver el resultado.";
-    return;
-  }
-
-  const maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-  showResult(maxType);
-}
-
-function showResult(type) {
-  document.getElementById("quiz").style.display = "none";
-  const resultDiv = document.getElementById("result");
-  resultDiv.style.display = "block";
-
-  let resultText = "", shoeText = "", shoeImg = "";
-  if (type === "analitico") {
-    resultText = "🧠 Sos un ENTREVISTADOR ANALÍTICO: estructurado, lógico y preciso.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Max 90</b>";
-    shoeImg = "airmax.png";
-  } else if (type === "empatico") {
-    resultText = "💬 Sos un ENTREVISTADOR EMPÁTICO: cercano, sensible y humano.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Force 1</b>";
-    shoeImg = "ZapaBlanca.png";
-  } else {
-    resultText = "⚡️ Sos un ENTREVISTADOR INTUITIVO: creativo, espontáneo y perceptivo.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Jordan 1 Retro</b>";
-    shoeImg = "ZapaRoja.png";
-  }
-
-  resultDiv.innerHTML = `
-    <h1>Resultado</h1>
-    <p>${resultText}</p>
-    <p>${shoeText}</p>
-    <img src="${shoeImg}" alt="Modelo Nike recomendado">
-    <br>
-    <button onclick="endQuiz()">Finalizar</button>
+  <div class="container hidden" id="final-screen">
+    <h1>JUST DO IT.</h1>
     <button onclick="restartQuiz()">Volver a empezar</button>
-  `;
-}
+  </div>
 
-function endQuiz() {
-  document.getElementById("result").style.display = "none";
-  document.getElementById("final").style.display = "block";
-}
+  <script>
+    const questions = [
+      {
+        question: "¿Cuál es tu tipo de entrenamiento preferido?",
+        options: ["Cardio", "Fuerza", "Funcional", "No entreno"],
+      },
+      {
+        question: "¿Cuántas veces por semana entrenás?",
+        options: ["1-2", "3-4", "5 o más", "Nunca"],
+      },
+      {
+        question: "¿Qué te motiva a entrenar?",
+        options: ["Salud", "Estética", "Competencia", "Diversión"],
+      }
+    ];
 
-function restartQuiz() {
-  document.getElementById("result").style.display = "none";
-  document.getElementById("final").style.display = "none";
-  document.getElementById("quiz").style.display = "none";
-  document.getElementById("start").style.display = "block";
-  window.scrollTo(0, 0);
-}
+    let answers = [];
 
-document.getElementById("start").style.display = "block";
-</script>
+    function startQuiz() {
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+      renderQuiz();
+    }
 
+    function renderQuiz() {
+      const quizContainer = document.getElementById("quiz");
+      quizContainer.innerHTML = "";
+
+      questions.forEach((q, index) => {
+        const qDiv = document.createElement("div");
+        qDiv.classList.add("question-container");
+
+        const qTitle = document.createElement("h2");
+        qTitle.textContent = q.question;
+        qDiv.appendChild(qTitle);
+
+        q.options.forEach((opt) => {
+          const btn = document.createElement("div");
+          btn.classList.add("option");
+          btn.textContent = opt;
+          btn.onclick = () => selectOption(index, opt, btn);
+          qDiv.appendChild(btn);
+        });
+
+        quizContainer.appendChild(qDiv);
+      });
+    }
+
+    function selectOption(qIndex, option, btn) {
+      answers[qIndex] = option;
+      const options = btn.parentElement.querySelectorAll(".option");
+      options.forEach(o => o.classList.remove("selected"));
+      btn.classList.add("selected");
+    }
+
+    function showResult() {
+      if (answers.length < questions.length || answers.includes(undefined)) {
+        document.getElementById("warning").classList.remove("hidden");
+        return;
+      }
+      document.getElementById("warning").classList.add("hidden");
+
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.remove("hidden");
+
+      const resultText = document.getElementById("result-text");
+      resultText.textContent = "Tu perfil es: motivado y constante. Perfecto para la actitud Nike 💪";
+    }
+
+    function showFinal() {
+      document.getElementById("result-screen").classList.add("hidden");
+      document.getElementById("final-screen").classList.remove("hidden");
+    }
+
+    function restartQuiz() {
+      answers = [];
+      document.getElementById("final-screen").classList.add("hidden");
+      document.getElementById("result-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("start-screen").classList.remove("hidden");
+    }
+  </script>
 </body>
 </html>
-
-
-
