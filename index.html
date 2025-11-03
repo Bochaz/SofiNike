@@ -1,272 +1,365 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>¿Qué tipo de entrevistador Nike sos?</title>
 <style>
+  :root {
+    --bg: #000;
+    --panel: #0f0f10;
+    --muted: #999;
+    --accent: #e01e37;
+    --white: #fff;
+    --card: #121213;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; font-family: "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--white); }
+
   body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #000;
-    color: #fff;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-
-  h1, h2 {
-    text-transform: uppercase;
-    color: #e01e37;
-    margin-bottom: 20px;
-  }
-
-  .logo {
-    width: 120px;
-    margin-bottom: 20px;
-  }
-
-  #start, #quiz, #result, #final {
-    display: none;
-    padding: 30px;
-    animation: fadeIn 0.5s ease-in;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .question-card {
-    background-color: #111;
-    border: 1px solid #333;
-    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-    margin: 20px auto;
-    max-width: 600px;
-    text-align: left;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .question-card:hover {
-    transform: scale(1.01);
-    box-shadow: 0 0 15px #e01e37;
+  .app {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    overflow: hidden;
   }
 
-  .question {
-    font-weight: bold;
-    color: #e01e37;
-    margin-bottom: 15px;
+  /* Start screen */
+  .start {
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    min-height: 420px;
   }
 
-  label {
-    display: block;
-    padding: 8px 0;
-    cursor: pointer;
+  .logo-swoosh {
+    width: 160px;
+    height: auto;
+    filter: invert(1) brightness(1.4);
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    animation: logoIn .9s cubic-bezier(.2,.9,.3,1) forwards;
+  }
+  @keyframes logoIn { to { opacity: 1; transform: none; } }
+
+  .hero-title {
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    color: var(--white);
+    margin: 0;
+    text-align: center;
   }
 
-  input[type="radio"] {
-    accent-color: #e01e37;
+  .hero-sub {
+    color: var(--muted);
+    max-width: 640px;
+    text-align: center;
+    line-height: 1.5;
   }
 
-  button {
-    background-color: #e01e37;
-    color: white;
+  .btn-primary {
+    background: var(--white);
+    color: var(--bg);
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-weight: 700;
     border: none;
-    padding: 12px 25px;
-    margin: 30px 10px 10px;
     cursor: pointer;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: transform .12s ease, box-shadow .12s ease;
   }
 
-  button:hover {
-    background-color: #c1121f;
-    transform: translateY(-2px);
+  .btn-primary:hover { transform: translateY(-3px); background: var(--accent); color: var(--white); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 20px;
+    border-radius: 999px;
+    cursor: pointer;
   }
 
-  img {
-    width: 180px;
-    margin-top: 20px;
+  /* Quiz */
+  .quiz-wrap { display: none; padding: 28px; min-height: 520px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .mini-swoosh { width: 36px; filter: invert(1) brightness(1.4); }
+  .title h3 { margin: 0; font-size: 18px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+  .title p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .questions { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media(min-width:880px){ .questions { grid-template-columns: 1fr 1fr; } }
+
+  .card-question {
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.03);
+    transition: box-shadow .14s ease, transform .12s ease;
+  }
+
+  .q-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--accent); text-transform: uppercase; }
+
+  .option-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
     border-radius: 10px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+    transition: all .15s ease;
+    user-select: none;
   }
 
-  #warning {
-    color: #ff5a5f;
-    margin-top: 10px;
-    font-weight: bold;
-    display: none;
+  .option-bullet {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    background: rgba(255,255,255,0.04);
   }
 
+  .option-text { font-size: 14px; color: #f2f2f2; }
+
+  .option-card:hover { background: rgba(255,255,255,0.05); transform: translateX(4px); }
+  .option-card.selected {
+    background: linear-gradient(90deg, rgba(224,30,55,0.15), rgba(224,30,55,0.07));
+    border-color: rgba(224,30,55,0.6);
+    box-shadow: 0 0 0 2px rgba(224,30,55,0.3);
+    animation: pulse 0.3s ease;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .actions { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+  .warning { color: #ff6b6b; font-weight: bold; display: none; }
+
+  /* Result */
+  .result-screen { display: none; padding: 34px; text-align: center; }
+  .result-card { max-width: 720px; margin: 0 auto; padding: 26px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); }
+  .result-card p { color: #ddd; line-height: 1.6; font-size: 15px; }
+  .result-shoe { width: 220px; margin-top: 18px; border-radius: 10px; }
+
+  .final-screen { display: none; padding: 40px; text-align: center; }
+  .final-screen h2 { color: var(--accent); letter-spacing: 2px; }
 </style>
 </head>
 <body>
 
-<div id="start">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" class="logo" alt="Nike logo">
-  <h1>Descubrí qué tipo de entrevistador Nike sos</h1>
-  <button onclick="startQuiz()">Empezar</button>
-</div>
+<div class="app">
+  <!-- START -->
+  <section id="start" class="start">
+    <img class="logo-swoosh" src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike logo">
+    <h1 class="hero-title">Descubrí qué tipo de entrevistador Nike sos</h1>
+    <p class="hero-sub">Un micro-quiz rápido para entender tu estilo al entrevistar.</p>
+    <button class="btn-primary" id="btn-start">Comenzar</button>
+  </section>
 
-<div id="quiz"></div>
-<div id="warning">⚠️ Respondé todas las preguntas antes de continuar.</div>
+  <!-- QUIZ -->
+  <section id="quiz" class="quiz-wrap">
+    <div class="topbar">
+      <div class="title">
+        <img class="mini-swoosh" src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="swoosh">
+        <div>
+          <h3>Quiz</h3>
+          <p>Respondé todas las preguntas</p>
+        </div>
+      </div>
+    </div>
 
-<div id="result"></div>
+    <div class="questions" id="questionsContainer"></div>
 
-<div id="final">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" class="logo" alt="Nike logo">
-  <h2>JUST DO IT.</h2>
-  <button onclick="restartQuiz()">Reiniciar</button>
+    <div class="actions">
+      <div><strong id="answeredCount">0</strong> / 8 respondidas</div>
+      <div>
+        <span class="warning" id="warning">⚠️ Completá todas las preguntas</span>
+        <button class="btn-primary" id="btn-result">Ver resultado</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="result-screen">
+    <div class="result-card">
+      <h2>Tu resultado</h2>
+      <p id="resultText"></p>
+      <img id="resultImage" class="result-shoe" src="" alt="zapatilla recomendada">
+      <div style="margin-top:20px;">
+        <button class="btn-ghost" id="btn-restart">Reiniciar</button>
+        <button class="btn-primary" id="btn-final">Finalizar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section id="final" class="final-screen">
+    <img class="logo-swoosh" src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike logo" style="width:120px;">
+    <h2>JUST DO IT.</h2>
+    <p style="color: var(--muted);">Gracias por completar el quiz.</p>
+    <button class="btn-primary" id="btn-restart2">Volver a empezar</button>
+  </section>
 </div>
 
 <script>
 const questions = [
   { q: "1. ¿Qué observás primero en un candidato?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["Su experiencia y datos concretos", "Cómo se siente en la entrevista", "Su energía y espontaneidad"]
+    a: { analitico:2, empatico:0, intuitivo:1 },
+    b: { analitico:0, empatico:2, intuitivo:1 },
+    c: { analitico:1, empatico:1, intuitivo:2 },
+    options:["Su experiencia y datos concretos","Cómo se siente en la entrevista","Su energía y espontaneidad"]
   },
   { q: "2. ¿Cómo preparás una entrevista?",
-    a: { analitico: 2, empatico: 0, intuitivo: 0 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Con una guía estructurada", "Pensando en generar confianza", "Dejo que fluya según la charla"]
+    a:{analitico:2,empatico:0,intuitivo:0},
+    b:{analitico:0,empatico:2,intuitivo:0},
+    c:{analitico:0,empatico:0,intuitivo:2},
+    options:["Con una guía estructurada","Pensando en generar confianza","Dejo que fluya según la charla"]
   },
   { q: "3. Si un candidato se bloquea en una respuesta...",
-    a: { analitico: 1, empatico: 2, intuitivo: 1 },
-    b: { analitico: 2, empatico: 0, intuitivo: 0 },
-    c: { analitico: 0, empatico: 1, intuitivo: 2 },
-    options: ["Le doy espacio y apoyo", "Paso a la siguiente pregunta sin insistir", "Improviso algo para relajar el ambiente"]
+    a:{analitico:1,empatico:2,intuitivo:1},
+    b:{analitico:2,empatico:0,intuitivo:0},
+    c:{analitico:0,empatico:1,intuitivo:2},
+    options:["Le doy espacio y apoyo","Paso a la siguiente pregunta sin insistir","Improviso algo para relajar el ambiente"]
   },
   { q: "4. ¿Qué valorás más en un candidato?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["La coherencia entre lo que dice y lo que hace", "La actitud y la empatía", "La visión y originalidad"]
+    a:{analitico:2,empatico:0,intuitivo:1},
+    b:{analitico:0,empatico:2,intuitivo:1},
+    c:{analitico:1,empatico:1,intuitivo:2},
+    options:["La coherencia entre lo que dice y lo que hace","La actitud y la empatía","La visión y originalidad"]
   },
   { q: "5. ¿Cómo tomás tus decisiones finales?",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Analizando datos y resultados", "Pensando en el equipo y el clima laboral", "Siguiendo mi corazonada"]
+    a:{analitico:2,empatico:0,intuitivo:1},
+    b:{analitico:0,empatico:2,intuitivo:1},
+    c:{analitico:0,empatico:0,intuitivo:2},
+    options:["Analizando datos y resultados","Pensando en el equipo y el clima laboral","Siguiendo mi corazonada"]
   },
   { q: "6. En una entrevista, te interesa más...",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["La precisión de sus respuestas", "Su nivel de conexión", "Su energía y lenguaje corporal"]
+    a:{analitico:2,empatico:0,intuitivo:1},
+    b:{analitico:0,empatico:2,intuitivo:0},
+    c:{analitico:0,empatico:0,intuitivo:2},
+    options:["La precisión de sus respuestas","Su nivel de conexión","Su energía y lenguaje corporal"]
   },
   { q: "7. Tu herramienta preferida sería...",
-    a: { analitico: 2, empatico: 0, intuitivo: 0 },
-    b: { analitico: 0, empatico: 2, intuitivo: 0 },
-    c: { analitico: 0, empatico: 0, intuitivo: 2 },
-    options: ["Tests psicotécnicos o entrevistas por competencias", "Conversaciones abiertas", "Dinámicas creativas y role plays"]
+    a:{analitico:2,empatico:0,intuitivo:0},
+    b:{analitico:0,empatico:2,intuitivo:0},
+    c:{analitico:0,empatico:0,intuitivo:2},
+    options:["Tests psicotécnicos o entrevistas por competencias","Conversaciones abiertas","Dinámicas creativas y role plays"]
   },
   { q: "8. Si Nike te pidiera elegir un talento para una campaña global...",
-    a: { analitico: 2, empatico: 0, intuitivo: 1 },
-    b: { analitico: 0, empatico: 2, intuitivo: 1 },
-    c: { analitico: 1, empatico: 1, intuitivo: 2 },
-    options: ["Al que tenga mejores resultados comprobables", "Al que inspire con su historia", "Al que rompa los esquemas y genere impacto"]
+    a:{analitico:2,empatico:0,intuitivo:1},
+    b:{analitico:0,empatico:2,intuitivo:1},
+    c:{analitico:1,empatico:1,intuitivo:2},
+    options:["Al que tenga mejores resultados comprobables","Al que inspire con su historia","Al que rompa los esquemas y genere impacto"]
   }
 ];
 
-function startQuiz() {
-  document.getElementById("start").style.display = "none";
-  renderQuiz();
-  document.getElementById("quiz").style.display = "block";
+let answers = Array(questions.length).fill(null);
+
+const start = document.getElementById("start");
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+const final = document.getElementById("final");
+const container = document.getElementById("questionsContainer");
+const warning = document.getElementById("warning");
+const answeredCount = document.getElementById("answeredCount");
+
+document.getElementById("btn-start").onclick = () => { render(); show(quiz); };
+document.getElementById("btn-result").onclick = () => calc();
+document.getElementById("btn-restart").onclick = () => restart();
+document.getElementById("btn-final").onclick = () => show(final);
+document.getElementById("btn-restart2").onclick = () => restart();
+
+function show(sec) {
+  [start, quiz, result, final].forEach(s => s.style.display = "none");
+  sec.style.display = "block";
+  window.scrollTo(0,0);
 }
 
-function renderQuiz() {
-  const quizContainer = document.getElementById("quiz");
-  quizContainer.innerHTML = "";
+function render() {
+  container.innerHTML = "";
   questions.forEach((q, i) => {
     const card = document.createElement("div");
-    card.classList.add("question-card");
-    card.innerHTML = `
-      <div class="question">${q.q}</div>
-      <label><input type="radio" name="q${i}" value="a"> ${q.options[0]}</label>
-      <label><input type="radio" name="q${i}" value="b"> ${q.options[1]}</label>
-      <label><input type="radio" name="q${i}" value="c"> ${q.options[2]}</label>
-    `;
-    quizContainer.appendChild(card);
+    card.className = "card-question";
+    card.innerHTML = `<div class='q-title'>${q.q}</div>`;
+    q.options.forEach((opt, idx) => {
+      const key = ["a","b","c"][idx];
+      const btn = document.createElement("div");
+      btn.className = "option-card";
+      btn.innerHTML = `<div class='option-bullet'>${String.fromCharCode(65+idx)}</div><div class='option-text'>${opt}</div>`;
+      btn.onclick = () => select(i, key, btn);
+      card.appendChild(btn);
+    });
+    container.appendChild(card);
   });
-
-  const btn = document.createElement("button");
-  btn.textContent = "Ver resultado";
-  btn.onclick = calculateResult;
-  quizContainer.appendChild(btn);
+  answeredCount.textContent = "0";
+  warning.style.display = "none";
 }
 
-function calculateResult() {
-  let scores = { analitico: 0, empatico: 0, intuitivo: 0 };
-  let allAnswered = true;
+function select(i, key, btn) {
+  answers[i] = key;
+  const parent = btn.parentElement;
+  parent.querySelectorAll(".option-card").forEach(o => o.classList.remove("selected"));
+  btn.classList.add("selected");
+  answeredCount.textContent = answers.filter(a => a).length;
+  warning.style.display = "none";
+}
 
-  questions.forEach((q, i) => {
-    const answer = document.querySelector(`input[name="q${i}"]:checked`);
-    if (!answer) allAnswered = false;
-    else {
-      const value = q[answer.value];
-      scores.analitico += value.analitico;
-      scores.empatico += value.empatico;
-      scores.intuitivo += value.intuitivo;
-    }
-  });
-
-  if (!allAnswered) {
-    document.getElementById("warning").style.display = "block";
+function calc() {
+  if (answers.includes(null)) {
+    warning.style.display = "block";
     return;
   }
 
-  document.getElementById("warning").style.display = "none";
+  let scores = { analitico:0, empatico:0, intuitivo:0 };
+  questions.forEach((q, i) => {
+    const val = q[answers[i]];
+    scores.analitico += val.analitico;
+    scores.empatico += val.empatico;
+    scores.intuitivo += val.intuitivo;
+  });
 
-  const maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-  showResult(maxType);
-}
-
-function showResult(type) {
-  document.getElementById("quiz").style.display = "none";
-  const resultDiv = document.getElementById("result");
-  resultDiv.style.display = "block";
-
-  let resultText = "", shoeText = "", shoeImg = "";
-
-  if (type === "analitico") {
-    resultText = "🧠 Sos un ENTREVISTADOR ANALÍTICO: estructurado, lógico y preciso. Tomás decisiones basadas en evidencia, buscando eficiencia y claridad.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Max 90</b> — clásico, confiable y con diseño limpio, como tu forma de pensar.";
-    shoeImg = "airmax.png";
-  } else if (type === "empatico") {
-    resultText = "💬 Sos un ENTREVISTADOR EMPÁTICO: cercano, sensible y humano. Te importa generar confianza y valorar la autenticidad de las personas.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Force 1</b> — versátil, cálido y adaptable, como vos.";
-    shoeImg = "ZapaBlanca.png";
+  const maxType = Object.keys(scores).reduce((a,b)=>scores[a]>scores[b]?a:b);
+  let text="",img="";
+  if(maxType==="analitico"){
+    text="🧠 Sos un ENTREVISTADOR ANALÍTICO: estructurado, lógico y preciso. Tomás decisiones basadas en evidencia, buscando eficiencia y claridad.";
+    img="airmax.png";
+  } else if(maxType==="empatico"){
+    text="💬 Sos un ENTREVISTADOR EMPÁTICO: cercano, sensible y humano. Te importa generar confianza y valorar la autenticidad de las personas.";
+    img="ZapaBlanca.png";
   } else {
-    resultText = "⚡️ Sos un ENTREVISTADOR INTUITIVO: creativo, espontáneo y perceptivo. Confiás en tu instinto y ves el potencial antes que nadie.";
-    shoeText = "Tu modelo Nike ideal es: <b>Air Jordan 1 Retro</b> — icónico, audaz y con historia, igual que tus decisiones.";
-    shoeImg = "ZapaRoja.png";
+    text="⚡️ Sos un ENTREVISTADOR INTUITIVO: creativo, espontáneo y perceptivo. Confiás en tu instinto y ves el potencial antes que nadie.";
+    img="ZapaRoja.png";
   }
 
-  resultDiv.innerHTML = `
-    <p>${resultText}</p>
-    <p>${shoeText}</p>
-    <img src="${shoeImg}" alt="Modelo Nike recomendado">
-    <br><button onclick="endQuiz()">Finalizar</button>
-  `;
+  document.getElementById("resultText").textContent = text;
+  document.getElementById("resultImage").src = img;
+  show(result);
 }
 
-function endQuiz() {
-  document.getElementById("result").style.display = "none";
-  document.getElementById("final").style.display = "block";
+function restart() {
+  answers = Array(questions.length).fill(null);
+  render();
+  show(start);
 }
-
-function restartQuiz() {
-  document.getElementById("final").style.display = "none";
-  document.getElementById("start").style.display = "block";
-}
-
-document.getElementById("start").style.display = "block";
+show(start);
 </script>
-
 </body>
 </html>
-
